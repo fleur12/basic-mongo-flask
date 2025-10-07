@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive User Page</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(120deg, #89f7fe, #66a6ff);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+        }
+        #usersTable {
+            width: 100%;
+        }
+        #userForm input {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        #userForm button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            background: #66a6ff;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #userForm button:hover {
+            background: #89f7fe;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Interactive User Entry Page</h1>
+<div class="container">
+    <form id="userForm" method="POST" action="/api/users">
+        <input type="text" name="Name" placeholder="Enter Name" required>
+        <input type="email" name="Email" placeholder="Enter Email" required>
+        <button type="submit">Add User</button>
+    </form>
+
+    <table id="usersTable" class="display">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.Name }}</td>
+                <td>{{ user.Email }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+$(document).ready(function(){
+    let table = $('#usersTable').DataTable({
+        paging: true,
+        searching: true,
+        info: false
+    });
+
+    // Handle form submit without AJAX
+    $('#userForm').submit(function(e){
+        e.preventDefault();
+        let form = $(this);
+        $.post(form.attr('action'), form.serialize(), function(){
+            location.reload(); // reload page to refresh table
+        });
+    });
+});
+</script>
+
+</body>
+</html>
